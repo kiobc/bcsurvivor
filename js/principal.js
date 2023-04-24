@@ -4,10 +4,12 @@ export default class Principal extends Phaser.Scene {
     }
     preload(){
         console.log("preload");
+        this.load.atlas('mujer', 'assets/imagenes/mujer.png', 'assets/imagenes/mujer_atlas.json');
     }
     create(){
         console.log("create");
-        this.player = this.matter.add.sprite(0, 0, 'player');
+        this.player = new Phaser.Physics.Matter.Sprite(this.matter.world, 0, 0, 'mujer', 'townsfolk_f_idle_1');
+        this.add.existing(this.player);
         this.keys=this.input.keyboard.addKeys({
             up:Phaser.Input.Keyboard.KeyCodes.W,
             down:Phaser.Input.Keyboard.KeyCodes.S,
