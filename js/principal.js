@@ -5,6 +5,7 @@ export default class Principal extends Phaser.Scene {
     preload(){
         console.log("preload");
         this.load.atlas('mujer', 'assets/imagenes/mujer.png', 'assets/imagenes/mujer_atlas.json');
+        this.load.animation('mujer_anim', 'assets/imagenes/mujer_anim.json');
     }
     create(){
         console.log("create");
@@ -18,6 +19,7 @@ export default class Principal extends Phaser.Scene {
         });
     }
     update(){
+        this.player.anims.play('mujer_idle',true);
         console.log("update");
         const speed=3;
         let playerVelocity=new Phaser.Math.Vector2();
