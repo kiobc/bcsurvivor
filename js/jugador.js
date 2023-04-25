@@ -3,11 +3,24 @@ export default class Jugador extends Phaser.Physics.Matter.Sprite {
         let {scene,x,y,texture,frame}=data;
         super(scene.matter.world,x,y,texture,frame);
         this.scene.add.existing(this);
+        const{Body,Bodies}=Phaser.Physics.Matter.Matter;
+        var jugadorCollider= Bodies.circle(this.x,this.y,12,{isSensor:false,label:'jugadorCollider'});
+        var jugadorSensor= Bodies.circle(this.x,this.y,24,{isSensor:true,label:'jugadorSensor'});
+        const compoundBody=Body.create({
+            parts:[jugadorCollider,jugadorSensor],
+            frictionAir:0.35,
+        });
+        this.setExistingBody(compoundBody);
+        this.setFixedRotation();
     }
 static preload(scene){
     
     scene.load.atlas('mujer', 'assets/imagenes/mujer.png', 'assets/imagenes/mujer_atlas.json');
     scene.load.animation('mujer_anim', 'assets/imagenes/mujer_anim.json');
+}
+
+get velocity(){
+    return this.body.velocity;
 }
 
     update(){
@@ -27,5 +40,10 @@ static preload(scene){
         playerVelocity.normalize();
         playerVelocity.scale(speed);
         this.setVelocity(playerVelocity.x,playerVelocity.y);
+        if(Math.abs(this.velocity.x)>0.1||Math.abs(this.velocity.y)>0.1){
+            this.anims.play('mujer_walk',true);
+        } else {
+            this.anims.play('mujer_idle',true);
+        }   
     }
 }

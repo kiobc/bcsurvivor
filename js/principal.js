@@ -10,6 +10,8 @@ export default class Principal extends Phaser.Scene {
     create(){
         console.log("create");
         this.player = new Jugador({scene:this,x:0, y:0,texture:'mujer', frame:'townsfolk_f_idle_1'});
+        let textPlayer = new Jugador({scene:this,x:100, y:100,texture:'mujer', frame:'townsfolk_f_idle_1'});
+
         this.player.inputKeys=this.input.keyboard.addKeys({
             up:Phaser.Input.Keyboard.KeyCodes.W,
             down:Phaser.Input.Keyboard.KeyCodes.S,
