@@ -1,4 +1,5 @@
 import Jugador from "./jugador.js";
+import Recursos from "./recursos.js";
 
 export default class Principal extends Phaser.Scene {
     constructor() {
@@ -6,9 +7,9 @@ export default class Principal extends Phaser.Scene {
     }
     preload(){
         Jugador.preload(this);
+        Recursos.preload(this);
         this.load.image('tiles','./assets/imagenes/RPG Nature Tileset.png');
         this.load.tilemapTiledJSON('map','./assets/imagenes/mapa.json');
-        this.load.atlas('resources', 'assets/imagenes/recursos.png', 'assets/imagenes/recursos_atlas.json');
     }
     create(){
         const map = this.make.tilemap({key: 'map'});
@@ -19,7 +20,7 @@ export default class Principal extends Phaser.Scene {
         suelo.setCollisionByProperty({collides:true});
         this.matter.world.convertTilemapLayer(suelo);
         
-        this.addRecursos();
+        this.map.getObjectLayer('Resources').objects.forEach(recurso=>new Recursos({scene:this,recurso}));
         this.player = new Jugador({scene:this,x:100, y:100,texture:'mujer', frame:'townsfolk_f_idle_1'});
         this.player.inputKeys=this.input.keyboard.addKeys({
             up:Phaser.Input.Keyboard.KeyCodes.W,
@@ -28,23 +29,7 @@ export default class Principal extends Phaser.Scene {
             right:Phaser.Input.Keyboard.KeyCodes.D,
         });
     }
-addRecursos(){
-    const recursos=this.map.getObjectLayer('Resources');
-    recursos.objects.forEach(recurso=>{
-        let resItem=new Phaser.Physics.Matter.Sprite(this.matter.world,recurso.x,recurso.x,'resources',recurso.type);
-        let yOrigin= recurso.properties.find(p=>p.name=='yOrigin').value;
-        resItem.x +=resItem.width/2;
-        resItem.y +=resItem.height/2;
-        resItem.y = resItem.y + resItem.height*(yOrigin-0.5);
-        const{Body,Bodies}=Phaser.Physics.Matter.Matter;
-        var circuloCollider= Bodies.circle(resItem.x,resItem.y,12,{isSensor:false,label:'collider'});
-        resItem.setExistingBody(circuloCollider);
 
-        resItem.setStatic(true);
-        resItem.setOrigin(0.5, yOrigin);
-        this.add.existing(resItem);
-    });
-}
 
 update(){
 this.player.update();
