@@ -1,13 +1,16 @@
+
 export default class Jugador extends Phaser.Physics.Matter.Sprite {
     constructor(data){
         let {scene,x,y,texture,frame}=data;
         super(scene.matter.world,x,y,texture,frame);
+        this.touching=[];
         this.scene.add.existing(this);
         //arma
         this.spriteWeapon = new Phaser.GameObjects.Sprite(this.scene, 0, 0, 'items', 162);
         this.spriteWeapon.setScale(0.8);
         this.spriteWeapon.setOrigin(0.25, 0.75);
         this.scene.add.existing(this.spriteWeapon);
+
         const{Body,Bodies}=Phaser.Physics.Matter.Matter;
         var jugadorCollider= Bodies.circle(this.x,this.y,12,{isSensor:false,label:'jugadorCollider'});
         var jugadorSensor= Bodies.circle(this.x,this.y,24,{isSensor:true,label:'jugadorSensor'});
@@ -17,6 +20,7 @@ export default class Jugador extends Phaser.Physics.Matter.Sprite {
         });
         this.setExistingBody(compoundBody);
         this.setFixedRotation();
+        this.CreateMiningCollisions(jugadorSensor);
         this.scene.input.on('pointermove',pointer=>this.setFlipX(pointer.worldX < this.x));
     }
 static preload(scene){
@@ -71,4 +75,24 @@ get velocity(){
             this.spriteWeapon.setAngle(this.armaRotacion);
         }
     }
+    CreateMiningCollisions(jugadorSensor){
+        this.scene.matterCollision.addOnCollideStart({
+            objectA:[jugadorSensor],
+            callback:other=>{
+                if(other.bodyB.isSensor) return;
+                this.touching.push(other.gameObjectB);
+                console.log(this.touching.length,other.gameObjectB.name);
+            },
+            context:this.scene,
+        });
+        this.scene.matterCollision.addOnCollideEnd({
+            objectA:[jugadorSensor],
+            callback:other=>{
+                this.touching=this.touching.filter(gameObject=>gameObject!=other.gameObjectB);
+                console.log(this.touching.length);
+            },
+            context:this.scene,
+        });
+    }
+    
 }

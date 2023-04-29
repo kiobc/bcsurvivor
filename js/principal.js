@@ -21,7 +21,7 @@ export default class Principal extends Phaser.Scene {
         this.matter.world.convertTilemapLayer(suelo);
         
         this.map.getObjectLayer('Resources').objects.forEach(recurso=>new Recursos({scene:this,recurso}));
-        this.player = new Jugador({scene:this,x:100, y:100,texture:'mujer', frame:'townsfolk_f_idle_1'});
+        this.player = new Jugador({scene:this,x:200, y:200,texture:'mujer', frame:'townsfolk_f_idle_1'});
         this.player.inputKeys=this.input.keyboard.addKeys({
             up:Phaser.Input.Keyboard.KeyCodes.W,
             down:Phaser.Input.Keyboard.KeyCodes.S,

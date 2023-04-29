@@ -7,6 +7,7 @@ export default class Recursos extends Phaser.Physics.Matter.Sprite {
         super(scene.matter.world,recurso.x,recurso.y,'resources',recurso.type);
         this.scene.add.existing(this);
         let yOrigin= recurso.properties.find(p=>p.name=='yOrigin').value;
+        this.name=recurso.type;
         this.x +=this.width/2;
         this.y +=this.height/2;
         this.y = this.y + this.height*(yOrigin-0.5);
