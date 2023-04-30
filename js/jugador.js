@@ -58,6 +58,7 @@ get velocity(){
         }   
         this.spriteWeapon.setPosition(this.x, this.y);
         this.armaRotar();
+        
     }
     armaRotar(){
         let pointer=this.scene.input.activePointer;
@@ -67,7 +68,8 @@ get velocity(){
             this.armaRotacion =0;
         }
         if(this.armaRotacion > 100){
-            this.armaRotacion =0;
+            this.hacerCosas();
+            this.armaRotacion=0;
         }
         if(this.flipX){
             this.spriteWeapon.setAngle(-this.armaRotacion - 90);
@@ -94,5 +96,11 @@ get velocity(){
             context:this.scene,
         });
     }
-    
+    hacerCosas(){
+        this.touching= this.touching.filter(gameObject => gameObject.hit && !gameObject.dead);
+        this.touching.forEach(gameobject =>{
+            gameobject.hit();
+            if(gameobject.dead) gameobject.destroy();
+        });
+    }
 }
