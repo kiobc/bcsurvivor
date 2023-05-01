@@ -1,10 +1,10 @@
+import Materia from "./materia.js";
 
-export default class Jugador extends Phaser.Physics.Matter.Sprite {
+export default class Jugador extends Materia {
     constructor(data){
         let {scene,x,y,texture,frame}=data;
-        super(scene.matter.world,x,y,texture,frame);
+        super({...data,health:2,drops:[],name:'player'});
         this.touching=[];
-        this.scene.add.existing(this);
         //arma
         this.spriteWeapon = new Phaser.GameObjects.Sprite(this.scene, 0, 0, 'items', 162);
         this.spriteWeapon.setScale(0.8);
@@ -29,14 +29,11 @@ static preload(scene){
     scene.load.atlas('mujer', 'assets/imagenes/mujer.png', 'assets/imagenes/mujer_atlas.json');
     scene.load.animation('mujer_anim', 'assets/imagenes/mujer_anim.json');
     scene.load.spritesheet('items', 'assets/imagenes/items.png', { frameWidth: 32, frameHeight: 32 });
+    scene.load.audio('player', 'assets/audio/player.mp3');
 }
 
-get velocity(){
-    return this.body.velocity;
-}
 
     update(){
-        this.anims.play('mujer_idle',true);
         const speed=3;
         let playerVelocity=new Phaser.Math.Vector2();
         if(this.inputKeys.left.isDown){
