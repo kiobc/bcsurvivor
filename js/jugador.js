@@ -21,6 +21,7 @@ export default class Jugador extends Phaser.Physics.Matter.Sprite {
         this.setExistingBody(compoundBody);
         this.setFixedRotation();
         this.CreateMiningCollisions(jugadorSensor);
+        this.CreatePickupCollisions(jugadorCollider);
         this.scene.input.on('pointermove',pointer=>this.setFlipX(pointer.worldX < this.x));
     }
 static preload(scene){
@@ -96,6 +97,25 @@ get velocity(){
             context:this.scene,
         });
     }
+
+    CreatePickupCollisions(jugadorCollider){
+        this.scene.matterCollision.addOnCollideStart({
+            objectA:[jugadorCollider],
+            callback:other=>{
+                if(other.gameObjectB && other.gameObjectB.pickup) other.gameObjectB.pickup();
+            },
+            context:this.scene,
+        });
+        this.scene.matterCollision.addOnCollideActive({
+            objectA:[jugadorCollider],
+            callback:other=>{
+                if(other.gameObjectB && other.gameObjectB.pickup) other.gameObjectB.pickup();
+            },
+            context:this.scene,
+        });
+
+    }
+
     hacerCosas(){
         this.touching= this.touching.filter(gameObject => gameObject.hit && !gameObject.dead);
         this.touching.forEach(gameobject =>{
