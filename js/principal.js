@@ -1,12 +1,15 @@
+import Enemigo from "./enemigos.js";
 import Jugador from "./jugador.js";
 import Recursos from "./recursos.js";
 
 export default class Principal extends Phaser.Scene {
     constructor() {
       super("principal");
+      this.enemigo=[];
     }
     preload(){
         Jugador.preload(this);
+        Enemigo.preload(this);
         Recursos.preload(this);
         this.load.image('tiles','./assets/imagenes/RPG Nature Tileset.png');
         this.load.tilemapTiledJSON('map','./assets/imagenes/mapa.json');
@@ -21,6 +24,8 @@ export default class Principal extends Phaser.Scene {
         this.matter.world.convertTilemapLayer(suelo);
         
         this.map.getObjectLayer('Resources').objects.forEach(recurso=>new Recursos({scene:this,recurso}));
+        this.map.getObjectLayer('Enemies').objects.forEach(enemigo=> this.enemigo.push (new Enemigo({scene:this,enemigo})));
+
         this.player = new Jugador({scene:this,x:200, y:200,texture:'mujer', frame:'townsfolk_f_idle_1'});
         this.player.inputKeys=this.input.keyboard.addKeys({
             up:Phaser.Input.Keyboard.KeyCodes.W,
@@ -32,6 +37,7 @@ export default class Principal extends Phaser.Scene {
 
 
 update(){
+    this.enemigo.forEach(enemigo=>enemigo.update());
 this.player.update();
 }
 }
