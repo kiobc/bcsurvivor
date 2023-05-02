@@ -33,6 +33,11 @@ export default class Principal extends Phaser.Scene {
             left:Phaser.Input.Keyboard.KeyCodes.A,
             right:Phaser.Input.Keyboard.KeyCodes.D,
         });
+        let camara=this.cameras.main;
+        camara.zoom=2;
+        camara.startFollow(this.player);
+        camara.setLerp(0.1,0.1);
+        camara.setBounds(0,0,this.game.config.width,this.game.config.height);
     }
 
 

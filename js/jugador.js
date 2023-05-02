@@ -3,7 +3,7 @@ import Materia from "./materia.js";
 export default class Jugador extends Materia {
     constructor(data){
         let {scene,x,y,texture,frame}=data;
-        super({...data,health:2,drops:[],name:'player'});
+        super({...data,health:5,drops:[],name:'player'});
         this.touching=[];
         //arma
         this.spriteWeapon = new Phaser.GameObjects.Sprite(this.scene, 0, 0, 'items', 162);
