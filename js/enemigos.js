@@ -12,8 +12,59 @@ constructor(data){
     let drops= JSON.parse(enemigo.properties.find(p=>p.name=='drops').value);
     let health= enemigo.properties.find(p=>p.name=='health').value;
     super({scene, x:enemigo.x, y:enemigo.y, health, texture:'enemies', frame:`${enemigo.name}_idle_1`,drops, name:enemigo.name});
+
+    
+    const{Body,Bodies}=Phaser.Physics.Matter.Matter;
+    var enemigoCollider= Bodies.circle(this.x,this.y,12,{isSensor:false,label:'enemigoCollider'});
+    var enemigoSensor= Bodies.circle(this.x,this.y,80,{isSensor:true,label:'enemigoSensor'});
+    const compoundBody=Body.create({
+        parts:[enemigoCollider,enemigoSensor],
+        frictionAir:0.35,
+    });
+    this.setExistingBody(compoundBody);
+    this.setFixedRotation();
+    this.scene.matterCollision.addOnCollideStart({
+        objectA:[enemigoSensor],
+        callback:other=>{
+
+            if(other.gameObjectB && other.gameObjectB.name=='player'){
+                this.attacking= other.gameObjectB;
+            }
+        },
+        context:this.scene,
+    });
 }
+attack=(target)=>{
+    if(target.dead||this.dead){
+        clearInterval(this.attacktimer);
+        return;
+    }
+    target.hit();
+}
+
 update(){
-    console.log('enemigo update');
+    if(this.dead)return;
+    if(this.attacking){
+        let direction=this.attacking.position.subtract(this.position);
+        if(direction.length()>24){
+            let v=direction.normalize();
+            this.setVelocityX(direction.x);
+            this.setVelocityY(direction.y);
+            if(this.attacktimer){
+                clearInterval(this.attacktimer);
+                this.attacktimer=null;
+            }
+        }else{
+            if(this.attacktimer==null){
+                this.attacktimer= setInterval(this.attack,500,this.attacking);
+            }
+        }
+    }
+    this.setFlipX(this.velocity.x<0);
+    if(Math.abs(this.velocity.x)>0.1||Math.abs(this.velocity.y)>0.1){
+        this.anims.play(`${this.name}_walk`,true);
+    } else {
+        this.anims.play(`${this.name}_idle`,true);
+    }   
 }
 }
