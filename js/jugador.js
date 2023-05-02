@@ -22,7 +22,7 @@ export default class Jugador extends Materia {
         this.setFixedRotation();
         this.CreateMiningCollisions(jugadorSensor);
         this.CreatePickupCollisions(jugadorCollider);
-        this.scene.input.on('pointermove',pointer=>this.setFlipX(pointer.worldX < this.x));
+        this.scene.input.on('pointermove',pointer=>{ if(!this.dead) this.setFlipX(pointer.worldX < this.x)});
     }
 static preload(scene){
     
@@ -32,8 +32,16 @@ static preload(scene){
     scene.load.audio('player', 'assets/audio/player.mp3');
 }
 
+onDeath = () => {
+    this.anims.stop();
+    this.setTexture('items', 0);
+    this.setPosition(this.x, this.y + 10); // ajustar la posición de la animación
+    this.spriteWeapon.destroy();
+}
+
 
     update(){
+        if(this.dead) return;
         const speed=3;
         let playerVelocity=new Phaser.Math.Vector2();
         if(this.inputKeys.left.isDown){

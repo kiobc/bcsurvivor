@@ -25,13 +25,15 @@ get dead(){
     return this.health <= 0;
 }
 onDeath=()=>{};
+
 hit = ()=>{
     if(this.sound) this.sound.play();
     this.health--;
     console.log(`Hitting:${this.name} Health:${this.health}`);
     if(this.dead){
-        this.drops.forEach(drop=> new SoltarItem({scene:this.scene, x:this.x, y:this.y, frame:drop}));
         this.onDeath();
+        this.drops.forEach(drop=> new SoltarItem({scene:this.scene, x:this.x, y:this.y, frame:drop}));
+        
     }
 }
 }
